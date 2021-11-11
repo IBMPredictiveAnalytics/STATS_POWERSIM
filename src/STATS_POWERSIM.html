@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+<link rel="stylesheet" type="text/css" href="extsyntax.css" />
+<title>STATS_POWERSIM Extension Command</title>
+</head>
+
+<body>
+<h1>STATS_POWERSIM Extension Command</h1>
+<p>Provides tabular and graphic results for an array of parameter settings for any of the POWER procedures.</p>
+<div class="syntax">
+<font face="Courier New, monospace">
+<pre>
+<p>STATS_POWERSIM
+     /INPUT COMMAND<sup>&#42;</sup>&equals;<em>POWER_COMMAND_NAME</em>
+           &lsqb;PARAMETERS&equals;<em>&quot;keyword&equals;arg&hellip;&nbsp;keyword&equals;arg&hellip;&quot;</em>&rsqb;
+             VARY<sup>&#42;</sup>&equals;Parameter
+             VALUES<sup>&#42;</sup>&equals;&quot;values&quot;
+    &lsqb;/OPTIONS &lsqb;TABLE&equals;<b>YES<sup>&#42;&#42;</sup></b>&nbsp;&vert;&nbsp;NO&rsqb;
+            &lsqb;OUTFILE&equals;&ldquo;<em>filespec</em>&rdquo;&rsqb;
+            &lsqb;SYNTAX&equals;&ldquo;<em>filespec</em>&rdquo;&rsqb;&nbsp;&rsqb;
+    &lsqb;/GRAPH TYPE&equals;<b>LINE<sup>&#42;&#42;</sup></b>&nbsp;&vert;&nbsp;POINT&nbsp;&vert;&nbsp;BUBBLE&nbsp;&vert;&nbsp;NONE
+            &lsqb;X&equals;POWER&nbsp;&vert;&nbsp;N&nbsp;&vert;&nbsp;VARY_VALUES&nbsp;&vert;&nbsp;parameter&rsqb;
+            &lsqb;XLABEL&equals;&quot;X-Axis label&quot;&rsqb;
+            &lsqb;Y&equals;N&nbsp;&vert;&nbsp;POWER&nbsp;&vert;&nbsp;VARY_VALUES&nbsp;&vert;&nbsp;parameter&rsqb;
+            &lsqb;YLABEL&equals;&quot;Y-Axis label&quot;&rsqb;
+            &lsqb;COLOR&equals;<b>VARY_VALUES<sup>&#42;&#42;</sup></b>&nbsp;&vert;&nbsp;parameter&rsqb;
+            &lsqb;COLOR_LABEL&equals;&quot;Legend label for color&quot;&rsqb;
+            &lsqb;SIZE&equals;parameter&rsqb;
+            &lsqb;SIZE_LABEL&equals;&quot;Legend label for point size&quot;&rsqb;&nbsp;&rsqb;
+    &lsqb;/HELP&rsqb;</p>
+</style>
+</pre>
+<p><sup>&#42;</sup> Required<br/>
+<sup>&#42;&#42;</sup>Default</p>
+</div>
+</font>
+
+<p><font face="Courier New, monospace">STATS_POWERSIM /HELP</font> prints this information.</p>
+
+</div>
+
+<p>As with all <b>POWER</b> procedures, data are not required.</p>
+
+1. Using <b>PARAMETERS</b>:
+
+<pre class="example"><code>STATS_POWERSIM
+     /INPUT COMMAND=<em>POWER_MEANS_INDEPENDENT</em>
+            PARAMETERS=<em>&quot;TEST=DIRECTIONAL&nbsp;SIGNIFICANCE=.01&nbsp;&quot;</em>&nbsp;+
+                <em>&quot;POWER=.8&nbsp;TO&nbsp;.95&nbsp;BY&nbsp;.05&nbsp;NRATIO=1&nbsp;MEAN=60&nbsp;65&quot;</em>
+            VARY=<em>SD</em>
+            VALUES=<em>&quot;1&nbsp;2&nbsp;4&nbsp;8&quot;</em>
+    /OPTIONS TABLE=<em>YES</em>
+    /GRAPH X=<em>POWER</em>&nbsp;
+           XLABEL=<em>&quot;Requested&nbsp;Power&quot;</em>
+           Y=<em>N</em>&nbsp;
+           YLABEL=<em>&quot;Number&nbsp;of&nbsp;Cases&quot;</em>
+           COLOR=<em>VARY_VALUES</em>&nbsp;
+           COLOR_LABEL=<em>&quot;Std&nbsp;Deviation&quot;</em>
+           TYPE=<em>LINE</em>.
+</code></pre>
+
+2. Without <b>PARAMETERS</b>&nbsp;&lpar;invokes relevant POWER dialog&rpar;&colon;
+
+<pre class="example"><code>STATS_POWERSIM
+     /INPUT COMMAND=<em>POWER_UNIVARIATE_LINEAR</em>
+            VARY=<em>TEST_PREDICTORS</em>
+            VALUES=&quot;1 2 3 4&quot;
+     /OPTIONS TABLE=<em>YES</em>
+     /GRAPH TYPE=<em>LINE</em>
+        X=<em>POWER</em>
+        Y=<em>N</em>
+        COLOR=<em>VARY_VALUES</em>.
+</code></pre>
+
+3. When multiple arguments per iteration of VALUES&colon;
+
+<pre class="example"><code>STATS_POWERSIM
+     /INPUT COMMAND=<em>POWER_ONEWAY_ANOVA</em>
+            VARY=<em>GROUP_MEANS</em>
+            VALUES=&quot;&nbsp;&apos;32 43 25&apos;&nbsp;&apos;32 43 30&apos;&nbsp;&apos;32 43 35&apos;&nbsp;&quot;
+     /OPTIONS TABLE=<em>YES</em>
+     /GRAPH TYPE=<em>LINE</em>
+        X=<em>POWER</em>
+        Y=<em>N</em>
+        COLOR=<em>VARY_VALUES</em>.
+</code></pre>
+
+<h2>INPUT</h2>
+<p><strong>COMMAND</strong>: <em>Required.</em>&nbsp;The POWER procedure to be run with underscores (&lowbar;) where spaces normally appear. When PARAMETERS is not used, invokes the requested POWER dialog. Fill out the parameters on the dialog as required, select OK, and the simulation will run using the given VARY parameter and VALUES.</p>
+<p><strong>PARAMETERS</strong> (Syntax only): The keywords and associated values used in that POWER procedure. If multiple lines are used for readability, use &apos;&plus;&apos; as shown in the above example.</p>
+<p><strong>VARY</strong>: <em>Required.</em> The parameter that is to be varied. A variety of these are possible; most depend on the particular POWER procedure being used. See the table below for the acceptable PARAMETER and VALUE entries for each procedure.</p>
+<p><strong>VALUES</strong>: <em>Required.</em> The values of the parameter that will be used across repeated runs of the POWER procedure.
+<p>The following is a list of the available parameters for <b>VARY</b> as well as the valid values it can take. Please note:</p>
+<p>&nbsp;1. These values are also valid for <b>X</b>, <b>Y</b>, <b>COLOR</b>, and <b>SIZE</b> in the <b>/GRAPH</b> subcommand.</p>
+<p>&nbsp;2. Parameters values highlighted in <b>bold</b> are default values. For example, when <b>VARY</b>&equals;<b>TEST</b>, <b>VALUE</b> defaults to <b>&quot;NONDIRECTIONAL DIRECTIONAL&quot;</b>.</p>
+ 
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+ 
+ <table class=left>
+  <tr><th>POWER Procedure</th><th>Parameters for VARY</th><th>Valid VALUE entries (Must be quoted)</th></tr>
+  <tr><td>POWER MEANS INDEPENDENT</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&gt;&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NRATIO</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ES</td><td>&nbsp;&lt;Effect Size&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>SD</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>MEAN</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER MEANS ONESAMPLE</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ES</td><td>&nbsp;&lt;Effect Size&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>SD</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>MEAN</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NULL</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER MEANS RELATED</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NPAIRS</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ES</td><td>&nbsp;&lt;Effect Size&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>SD</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>RHO</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>MEAN</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER ONEWAY ANOVA</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>GROUP_SIZES</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>GROUP_WEIGHTS</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>POOLED_SD</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>GROUP_MEANS</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ES_F</td><td>&nbsp;&lt;Effect Size (f-Test)&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ES_ETA_SQUARED</td><td>&nbsp;&lt;Effect Size (Eta-Squared)&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ES_CONTRAST</td><td>&nbsp;&lt;Effect Size for the Contrast&nbsp;&gt;</td></tr>
+  <tr><td>POWER PARTIALCORR</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>PARTIALOUT</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NULL</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ALTERNATIVE</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER PEARSON ONESAMPLE</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ADJUST_BIAS</td><td>&nbsp;<b>TRUE FALSE</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NULL</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ALTERNATIVE</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER PROPORTIONS INDEPENDENT</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>METHOD</td><td>&nbsp;<b>CHISQ T LRT FISHER</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NRATIO</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ESTIMATE</td><td>&nbsp;<b>NORMAL BINOMIAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>CONTINUITY</td><td>&nbsp;<b>TRUE FALSE</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>POOLED</td><td>&nbsp;<b>TRUE FALSE</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>PROPORTIONS</td><td>&nbsp;&lt;Positive numbers &gt;0,&lt;1&nbsp;&gt;</td></tr>
+  <tr><td>POWER PROPORTIONS ONESAMPLE</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ESTIMATE</td><td>&nbsp;<b>NORMAL BINOMIAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>CONTINUITY</td><td>&nbsp;<b>TRUE FALSE</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>NULL</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ALTERNATIVE</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER PROPORTIONS RELATED</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NPAIRS</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ESTIMATE</td><td>&nbsp;<b>NORMAL BINOMIAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>CORRELATION</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER SPEARMAN ONESAMPLE</td><td>TEST</td><td>&nbsp;<b>NONDIRECTIONAL DIRECTIONAL</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>VARIANCE</td><td>&nbsp;<b>BW FHP CC</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NULL</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>ALTERNATIVE</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>POWER UNIVARIATE LINEAR</td><td>MODEL</td><td>&nbsp;<b>FIXED RANDOM</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>SIGNIFICANCE</td><td>&nbsp;&lt;p values&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>N</td><td>&nbsp;&lt;Positive integers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>TOTAL_PREDICTORS</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>TEST_PREDICTORS</td><td>&nbsp;&lt;Positive numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>INTERCEPT</td><td>&nbsp;<b>TRUE FALSE</b>&nbsp;</td></tr>
+  <tr><td>&nbsp;</td><td>PARTIAL_CORR</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>FULL_MODEL</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+  <tr><td>&nbsp;</td><td>NESTED_MODEL</td><td>&nbsp;&lt;Real numbers&nbsp;&gt;</td></tr>
+</table>
+
+<p>&nbsp;</p>
+<h2>OPTIONS</h2>
+<p><strong>TABLE</strong>: Summary table of the results.</p>
+<p><strong>OUTFILE=&ldquo;<em>filespec</em>&rdquo;</strong>: Save the aggregated POWER results in an SPSS SAV file.</p>
+<p><strong>SYNTAX=&ldquo;<em>filespec</em>&rdquo;</strong>: Save the syntax that recreates the analysis being requested.</p>
+<p>&nbsp;</p>
+<h2>GRAPH</h2>
+<p><b><em>Note:</b></em> For X, Y, COLOR, and SIZE, the value VARY_VALUES can also be used; this refers to the parameter specified in <b>/INPUT VARY=Parameter</b>.</p>
+<p>&nbsp;</sp>
+<p><strong>TYPE</strong>: Type of graph desired. Select <b>LINE</b>, <b>POINT</b>, <b>BUBBLE</b>, or <b>NONE</b>. Default=<b>LINE</b>.</p>
+<p><strong>X</strong>=<em>Parameter</em>: The parameter to display on the X axis. When searching for sample size for a given power, put POWER on X; when searching for power given a fixed sample size, put N on X.</p>
+<p><strong>XLABEL</strong>=<em>&ldquo;Axis label&rdquo;</em>: The X axis label.</p>
+<p><strong>Y</strong>=<em>Parameter</em>: The parameter to display on the Y axis. When searching for sample size for a given power, put N on Y; when searching for power given a fixed sample size, put power on Y.</p>
+<p><strong>YLABEL</strong>=<em>&ldquo;Axis label&rdquo;</em>: The Y axis label.</p>
+<p><strong>COLOR</strong>=<em>Parameter</em>: The parameter to use as the value for color in the graph. When this takes the value VARY_VALUES, it is the same parameter as specified in VARY (from the /INPUT subcommand).</p>
+<p><strong>COLOR_LABEL</strong>=<em>&ldquo;Label&rdquo;</em>: Legend label for color.</p>
+<p><strong>SIZE</strong>=<em>Parameter</em></strong>: The parameter to use for the size of points in a BUBBLE plot.</p>
+<p><strong>SIZE_LABEL</strong>=<em>&ldquo;Label&rdquo;</em>: Legend label for size.</p>
+<p>&nbsp;</sp>
+
+<p>The <b>STATS_POWERSIM</b> extension requires Python 3.</p>
+<p>&copy; Copyright IBM Corp. 2021</p>
+
+</body>
+
+</html>
+

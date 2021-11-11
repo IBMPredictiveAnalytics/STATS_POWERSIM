@@ -1,0 +1,14 @@
+Name: STATS POWERSIM
+Dialog-Specs: STATS_POWERSIM.cfe
+Command-Specs: STATS_POWERSIM.xml
+Code-Files: STATS_POWERSIM.py
+Misc-Files: STATS_POWERSIM.html,extsyntax.css,IBMdialogicon.png
+Summary: Performs simulations of various parameters for the POWER procedures.
+Description: Performs simulations of various parameters for the POWER procedures.
+Author: Richard J Marcantonio
+Version: 1.0.0
+Product-Version: 28
+Date: 11/5/21
+Platforms: Mac, Windows, Linux
+Categories: POWER
+Translation-Catalogues: lang 

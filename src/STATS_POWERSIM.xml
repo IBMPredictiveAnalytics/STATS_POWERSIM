@@ -1,0 +1,242 @@
+<Command xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extension-1.0.xsd" Name="STATS_POWERSIM" Language="Python" LanguageVersion="3">
+   <Subcommand Name="INPUT">
+	  <Parameter Name="COMMAND" ParameterType="Keyword" Occurrence="Required">
+	    <EnumValue Name="POWER_MEANS_INDEPENDENT"/>
+	    <EnumValue Name="POWER_MEANS_ONESAMPLE"/>
+	    <EnumValue Name="POWER_MEANS_RELATED"/>
+	    <EnumValue Name="POWER_ONEWAY_ANOVA"/>
+	    <EnumValue Name="POWER_PARTIALCORR"/>
+	    <EnumValue Name="POWER_PEARSON_ONESAMPLE"/>
+	    <EnumValue Name="POWER_PROPORTIONS_INDEPENDENT"/>
+	    <EnumValue Name="POWER_PROPORTIONS_ONESAMPLE"/>
+	    <EnumValue Name="POWER_PROPORTIONS_RELATED"/>
+	    <EnumValue Name="POWER_SPEARMAN_ONESAMPLE"/>
+	    <EnumValue Name="POWER_UNIVARIATE_LINEAR"/>
+      </Parameter>
+      <Parameter Name="PARAMETERS" ParameterType="QuotedString" Occurrence="Optional"/>
+      <Parameter Name="VARY" ParameterType="Keyword" Occurrence="Required">
+        <EnumValue Name="ADJUST_BIAS"/>
+        <EnumValue Name="ALTERNATIVE"/>
+        <EnumValue Name="CONTINUITY"/>
+        <EnumValue Name="CORRELATION"/>
+        <EnumValue Name="ES"/>
+        <EnumValue Name="ES_CONTRAST"/>
+        <EnumValue Name="ES_ETA_SQUARED"/>
+        <EnumValue Name="ES_F"/>
+        <EnumValue Name="ESTIMATE"/>
+        <EnumValue Name="FULL_MODEL"/>
+        <EnumValue Name="GROUP_MEANS"/>
+        <EnumValue Name="GROUP_SIZES"/>
+        <EnumValue Name="GROUP_WEIGHTS"/>
+        <EnumValue Name="INTERCEPT"/>
+        <EnumValue Name="MEAN"/>
+        <EnumValue Name="METHOD"/>
+        <EnumValue Name="MODEL"/>
+        <EnumValue Name="N"/>
+        <EnumValue Name="NESTED_MODEL"/>
+        <EnumValue Name="NPAIRS"/>
+        <EnumValue Name="NRATIO"/>
+        <EnumValue Name="NULL"/>
+        <EnumValue Name="PARTIAL_CORR"/>
+        <EnumValue Name="PARTIALOUT"/>
+        <EnumValue Name="POOLED"/>
+        <EnumValue Name="POOLED_SD"/>
+        <EnumValue Name="POWER"/>
+        <EnumValue Name="PROPORTIONS"/>
+        <EnumValue Name="RHO"/>
+        <EnumValue Name="SD"/>
+        <EnumValue Name="SIGNIFICANCE"/>
+        <EnumValue Name="TEST"/>
+        <EnumValue Name="TEST_PREDICTORS"/>
+        <EnumValue Name="TOTAL_PREDICTORS"/>
+        <EnumValue Name="VARIANCE"/>
+      </Parameter>  
+      <Parameter Name="VALUES" ParameterType="QuotedString" Occurrence="Optional"/> 
+   </Subcommand>
+   <Subcommand Name="OPTIONS">
+      <Parameter Name="TABLE" ParameterType="Keyword">
+         <EnumValue Name="YES"/>
+         <EnumValue Name="NO"/>
+      </Parameter>
+      <Parameter Name="SPS" ParameterType="OutputFile" Occurrence="Optional"/>
+      <Parameter Name="OUTFILE" ParameterType="OutputFile" Occurrence="Optional"/>
+   </Subcommand>
+   <Subcommand Name="GRAPH">
+      <Parameter Name="TYPE" ParameterType="Keyword" Occurrence="Optional">
+         <EnumValue Name="LINE"/>
+         <EnumValue Name="POINT"/>
+         <EnumValue Name="BUBBLE"/>
+         <EnumValue Name="NONE"/>
+      </Parameter>     
+      <Parameter Name="X" ParameterType="Keyword" Occurrence="Optional">
+        <EnumValue Name="VARY_VALUES"/>
+        <EnumValue Name="NONE"/>
+        <EnumValue Name="ADJUST_BIAS"/>
+        <EnumValue Name="ALTERNATIVE"/>
+        <EnumValue Name="CONTINUITY"/>
+        <EnumValue Name="CORRELATION"/>
+        <EnumValue Name="ES"/>
+        <EnumValue Name="ES_CONTRAST"/>
+        <EnumValue Name="ES_ETA_SQUARED"/>
+        <EnumValue Name="ES_F"/>
+        <EnumValue Name="ESTIMATE"/>
+        <EnumValue Name="FULL_MODEL"/>
+        <EnumValue Name="GROUP_MEANS"/>
+        <EnumValue Name="GROUP_SIZES"/>
+        <EnumValue Name="GROUP_WEIGHTS"/>
+        <EnumValue Name="INTERCEPT"/>
+        <EnumValue Name="MEAN"/>
+        <EnumValue Name="METHOD"/>
+        <EnumValue Name="MODEL"/>
+        <EnumValue Name="N"/>
+        <EnumValue Name="N1"/>
+        <EnumValue Name="N2"/>
+        <EnumValue Name="NESTED_MODEL"/>
+        <EnumValue Name="NPAIRS"/>
+        <EnumValue Name="NRATIO"/>
+        <EnumValue Name="NULL"/>
+        <EnumValue Name="PARTIAL_CORR"/>
+        <EnumValue Name="PARTIALOUT"/>
+        <EnumValue Name="POOLED"/>
+        <EnumValue Name="POOLED_SD"/>
+        <EnumValue Name="POWER"/>
+        <EnumValue Name="PROPORTIONS"/>
+        <EnumValue Name="RHO"/>
+        <EnumValue Name="SD"/>
+        <EnumValue Name="SIGNIFICANCE"/>
+        <EnumValue Name="TEST"/>
+        <EnumValue Name="TEST_PREDICTORS"/>
+        <EnumValue Name="TOTAL_PREDICTORS"/>
+        <EnumValue Name="VARIANCE"/>
+      </Parameter>
+      <Parameter Name="XLABEL" ParameterType="QuotedString"/>
+      <Parameter Name="Y" ParameterType="Keyword" Occurrence="Optional">
+        <EnumValue Name="VARY_VALUES"/>
+        <EnumValue Name="NONE"/>
+        <EnumValue Name="ADJUST_BIAS"/>
+        <EnumValue Name="ALTERNATIVE"/>
+        <EnumValue Name="CONTINUITY"/>
+        <EnumValue Name="CORRELATION"/>
+        <EnumValue Name="ES"/>
+        <EnumValue Name="ES_CONTRAST"/>
+        <EnumValue Name="ES_ETA_SQUARED"/>
+        <EnumValue Name="ES_F"/>
+        <EnumValue Name="ESTIMATE"/>
+        <EnumValue Name="FULL_MODEL"/>
+        <EnumValue Name="GROUP_MEANS"/>
+        <EnumValue Name="GROUP_SIZES"/>
+        <EnumValue Name="GROUP_WEIGHTS"/>
+        <EnumValue Name="INTERCEPT"/>
+        <EnumValue Name="MEAN"/>
+        <EnumValue Name="METHOD"/>
+        <EnumValue Name="MODEL"/>
+        <EnumValue Name="N"/>
+        <EnumValue Name="N1"/>
+        <EnumValue Name="N2"/>
+        <EnumValue Name="NESTED_MODEL"/>
+        <EnumValue Name="NPAIRS"/>
+        <EnumValue Name="NRATIO"/>
+        <EnumValue Name="NULL"/>
+        <EnumValue Name="PARTIAL_CORR"/>
+        <EnumValue Name="PARTIALOUT"/>
+        <EnumValue Name="POOLED"/>
+        <EnumValue Name="POOLED_SD"/>
+        <EnumValue Name="POWER"/>
+        <EnumValue Name="PROPORTIONS"/>
+        <EnumValue Name="RHO"/>
+        <EnumValue Name="SD"/>
+        <EnumValue Name="SIGNIFICANCE"/>
+        <EnumValue Name="TEST"/>
+        <EnumValue Name="TEST_PREDICTORS"/>
+        <EnumValue Name="TOTAL_PREDICTORS"/>
+        <EnumValue Name="VARIANCE"/>
+      </Parameter>
+      <Parameter Name="YLABEL" ParameterType="QuotedString"/>
+      <Parameter Name="COLOR" ParameterType="Keyword" Occurrence="Optional">
+        <EnumValue Name="VARY_VALUES"/>
+        <EnumValue Name="NONE"/>
+        <EnumValue Name="ADJUST_BIAS"/>
+        <EnumValue Name="ALTERNATIVE"/>
+        <EnumValue Name="CONTINUITY"/>
+        <EnumValue Name="CORRELATION"/>
+        <EnumValue Name="ES"/>
+        <EnumValue Name="ES_CONTRAST"/>
+        <EnumValue Name="ES_ETA_SQUARED"/>
+        <EnumValue Name="ES_F"/>
+        <EnumValue Name="ESTIMATE"/>
+        <EnumValue Name="FULL_MODEL"/>
+        <EnumValue Name="GROUP_MEANS"/>
+        <EnumValue Name="GROUP_SIZES"/>
+        <EnumValue Name="GROUP_WEIGHTS"/>
+        <EnumValue Name="INTERCEPT"/>
+        <EnumValue Name="MEAN"/>
+        <EnumValue Name="METHOD"/>
+        <EnumValue Name="MODEL"/>
+        <EnumValue Name="N"/>
+        <EnumValue Name="NESTED_MODEL"/>
+        <EnumValue Name="NPAIRS"/>
+        <EnumValue Name="NRATIO"/>
+        <EnumValue Name="NULL"/>
+        <EnumValue Name="PARTIAL_CORR"/>
+        <EnumValue Name="PARTIALOUT"/>
+        <EnumValue Name="POOLED"/>
+        <EnumValue Name="POOLED_SD"/>
+        <EnumValue Name="POWER"/>
+        <EnumValue Name="PROPORTIONS"/>
+        <EnumValue Name="RHO"/>
+        <EnumValue Name="SD"/>
+        <EnumValue Name="SIGNIFICANCE"/>
+        <EnumValue Name="TEST"/>
+        <EnumValue Name="TEST_PREDICTORS"/>
+        <EnumValue Name="TOTAL_PREDICTORS"/>
+        <EnumValue Name="VARIANCE"/>
+      </Parameter>  
+      <Parameter Name="COLOR_LABEL" ParameterType="QuotedString" Occurrence="Optional"/>
+      <Parameter Name="SIZE" ParameterType="Keyword" Occurrence="Optional">
+        <EnumValue Name="VARY_VALUES"/>
+        <EnumValue Name="NONE"/>
+        <EnumValue Name="ADJUST_BIAS"/>
+        <EnumValue Name="ALTERNATIVE"/>
+        <EnumValue Name="CONTINUITY"/>
+        <EnumValue Name="CORRELATION"/>
+        <EnumValue Name="ES"/>
+        <EnumValue Name="ES_CONTRAST"/>
+        <EnumValue Name="ES_ETA_SQUARED"/>
+        <EnumValue Name="ES_F"/>
+        <EnumValue Name="ESTIMATE"/>
+        <EnumValue Name="FULL_MODEL"/>
+        <EnumValue Name="GROUP_MEANS"/>
+        <EnumValue Name="GROUP_SIZES"/>
+        <EnumValue Name="GROUP_WEIGHTS"/>
+        <EnumValue Name="INTERCEPT"/>
+        <EnumValue Name="MEAN"/>
+        <EnumValue Name="METHOD"/>
+        <EnumValue Name="MODEL"/>
+        <EnumValue Name="N"/>
+        <EnumValue Name="NESTED_MODEL"/>
+        <EnumValue Name="NPAIRS"/>
+        <EnumValue Name="NRATIO"/>
+        <EnumValue Name="NULL"/>
+        <EnumValue Name="PARTIAL_CORR"/>
+        <EnumValue Name="PARTIALOUT"/>
+        <EnumValue Name="POOLED"/>
+        <EnumValue Name="POOLED_SD"/>
+        <EnumValue Name="POWER"/>
+        <EnumValue Name="PROPORTIONS"/>
+        <EnumValue Name="RHO"/>
+        <EnumValue Name="SD"/>
+        <EnumValue Name="SIGNIFICANCE"/>
+        <EnumValue Name="TEST"/>
+        <EnumValue Name="TEST_PREDICTORS"/>
+        <EnumValue Name="TOTAL_PREDICTORS"/>
+        <EnumValue Name="VARIANCE"/>
+      </Parameter>  
+      <Parameter Name="SIZE_LABEL" ParameterType="QuotedString" Occurrence="Optional"/>
+      <Parameter Name="ENGINE" ParameterType="Keyword">
+         <EnumValue Name="GGRAPH"/>
+         <EnumValue Name="VGRAPH"/>
+      </Parameter>
+   </Subcommand>
+   <Subcommand Name="PRINT_DEBUG" Occurrence="Optional"/>
+   <Subcommand Name="HELP" Occurrence="Optional"/>
+</Command>
