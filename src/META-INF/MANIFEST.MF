@@ -1,4 +1,4 @@
-Name: STATS POWERSIM
+Name: STATS_POWERSIM
 Dialog-Specs: STATS_POWERSIM.cfe
 Command-Specs: STATS_POWERSIM.xml
 Code-Files: STATS_POWERSIM.py
