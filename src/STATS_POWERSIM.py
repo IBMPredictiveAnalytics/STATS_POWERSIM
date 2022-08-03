@@ -585,38 +585,150 @@ def WarningsTable(Text):
   table[(rowLabel,)] = spss.CellText.String(Text)
   spss.EndProcedure()
 
-def GetSyntaxFromUI(command):
+def Get_UI_Lang(my_os):
+  ## Get ui_language
+  
+  UI_Lang="English"  ## Default assumption
+  
+  if my_os == "darwin":
+    import plistlib
+    import os
+    import getpass
+    username=getpass.getuser()
+    fn = '/Users/' + username + '/Library/Preferences/com.ibm.spss.plist'
+    if not os.path.exists(fn):
+      print(fn)
+      print("Can't find com.ibm.spss.plist.")
+    else:
+      with open(fn, 'rb') as f:  
+        pl = plistlib.load(f)
+        x=str(pl)
+        y=x.index("ui_language")
+        z=x.index(",",y+1)
+        UI_Lang=x[y+13:z].replace("'","").replace(' ',"")
+   
+  elif my_os == "windows":
+
+    path= winreg.HKEY_CURRENT_USER
+    key = winreg.OpenKeyEx(path, r"Software\JavaSoft\Prefs\com\ibm\/S/P/S/S\/Statistics\one\ui\options\general")
+    value = winreg.QueryValueEx(key,"ui_language")
+    if key: winreg.CloseKey(key)
+    UI_Lang=str(value[0]).replace("/","")
+
+  return(UI_Lang)
+
+def GetSyntaxFromUI(lang,command):
   import SpssClient
   SpssClient.StartClient()
   ActiveDataDoc = SpssClient.GetActiveDataDoc()
   SpssDataUI = ActiveDataDoc.GetDataUI()
-  Menu="Analyze>Power Analysis>"
+
   c=command.upper()
-  if FindString(c, "POWER MEANS ONESAMPLE"):
-    cmdname="Means>One-Sample T Test"
-  elif FindString(c, "POWER MEANS RELATED"):
-    cmdname="Means>Paired-Samples T Test"
-  elif FindString(c, "POWER MEANS INDEPENDENT"):
-    cmdname="Means>Independent-Samples T Test"
-  elif FindString(c, "POWER ONEWAY ANOVA"):
-    cmdname="Means>One-Way ANOVA"
-  elif FindString(c, "POWER PROPORTIONS ONESAMPLE"):
-    cmdname="Proportions>One-Sample Binomial Test"
-  elif FindString(c, "POWER PROPORTIONS RELATED"):
-    cmdname="Proportions>Related-Samples Binomial Test"
-  elif FindString(c, "POWER PROPORTIONS INDEPENDENT"):
-    cmdname="Proportions>Independent-Samples Binomial Test"
-  elif FindString(c, "POWER PEARSON ONESAMPLE"):
-    cmdname="Correlations>Pearson Product-Moment"
-  elif FindString(c, "POWER SPEARMAN ONESAMPLE"):
-    cmdname="Correlations>Spearman Rank-Order"
-  elif FindString(c, "POWER PARTIALCORR"):
-    cmdname="Correlations>Partial"
-  elif FindString(c, "POWER UNIVARIATE LINEAR"):
-    cmdname="Regression>Univariate Linear"
+  l=lang.upper()
+  
+  if FindString(c, "POWER MEANS ONESAMPLE"): power=1
+  elif FindString(c, "POWER MEANS RELATED"): power=2
+  elif FindString(c, "POWER MEANS INDEPENDENT"): power=3
+  elif FindString(c, "POWER ONEWAY ANOVA"): power=0
+  elif FindString(c, "POWER PROPORTIONS ONESAMPLE"): power=5
+  elif FindString(c, "POWER PROPORTIONS RELATED"): power=4
+  elif FindString(c, "POWER PROPORTIONS INDEPENDENT"): power=6
+  elif FindString(c, "POWER PEARSON ONESAMPLE"): power=7
+  elif FindString(c, "POWER SPEARMAN ONESAMPLE"): power=9
+  elif FindString(c, "POWER PARTIALCORR"): power=8
+  elif FindString(c, "POWER UNIVARIATE LINEAR"): power=10
+  else: power=1
+  
+  BPORTUGU=["Médias>Análise de Variância Unidirecional","Médias>Teste-T de uma amostra","Médias>Teste-T de amostras pareadas",\
+  "Médias>Teste-T de amostras independentes","Proporções>Teste binomial de amostras relacionadas",\
+  "Proporções>Teste binomial de uma amostra","Proporções>Teste binomial de amostras independentes",\
+  "Correlações>Momento de produto Pearson","Correlações>Parcial","Correlações>Ordem de posto do Spearman",\
+  "Regressão>Linear univariado"]
+  ENGLISH=["Means>One-Way ANOVA","Means>One-Sample T Test","Means>Paired-Samples T Test","Means>Independent-Samples T Test",\
+  "Proportions>Related-Samples Binomial Test","Proportions>One-Sample Binomial Test","Proportions>Independent-Samples Binomial Test",\
+  "Correlations>Pearson Product-Moment","Correlations>Partial","Correlations>Spearman Rank-Order","Regression>Univariate Linear"]
+  FRENCH=["Moyennes>ANOVA à 1 facteur","Moyennes>Test T pour échantillon unique","Moyennes>Test T pour échantillons appariés",\
+  "Moyennes>Test T pour échantillons indépendants","Proportions>Test binomial pour échantillons liés",\
+  "Proportions>Test binomial pour échantillon unique","Proportions>Test binomial d'échantillons indépendants",\
+  "Corrélations>Produit-moment de Pearson","Corrélations>Partielle","Corrélations>Ordre des rangs de Spearman",\
+  "Régression>Linéaire univarié"]
+  GERMAN=["Mittelwerte>Einfaktorielle Varianzanalyse","Mittelwerte>t-Test bei einer Stichprobe",\
+  "Mittelwerte>t-Test bei Stichproben mit paarigen Werten","Mittelwerte>t-Test bei unabhängigen Stichproben",\
+  "Anteile>Test auf Binomialverteilung bei verbundenen Stichproben","Anteile>Test auf Binomialverteilung bei einer Stichprobe",\
+  "Anteile>Test auf Binomialverteilung bei unabhängigen Stichproben","Korrelationen>Pearson-Produkt-Moment",\
+  "Korrelationen>Partiell","Korrelationen>Spearman-Rangordnung","Regression>Univariat linear"]
+  ITALIAN=["Medie>ANOVA a una via","Medie>Test T a campione singolo","Medie>Test T a campioni accoppiati",\
+  "Medie>Test T a campioni indipendenti","Proporzioni>Test binomiale a campioni correlati",\
+  "Proporzioni>Test binomiale a campione singolo","Proporzioni>Test binomiale a campioni indipendenti",\
+  "Correlazioni>PPMC (Pearson Product-Moment Correlation)","Correlazioni>Parziale","Correlazioni>Ordine di rango di Spearman",\
+  "Regressione>Lineare univariata"]
+  JAPANESE=["平均(M)>一元配置分散分析(A)","平均(M)>1 サンプルの t 検定(O)","平均(M)>対応のあるサンプルの t 検定(P)",\
+  "平均(M)>独立したサンプルの t 検定(I)","比率(P)>対応サンプルによる 2 項検定(R)","比率(P)>1 サンプルによる 2 項検定(O)",\
+  "比率(P)>独立サンプルによる 2 項検定(I)","相関(C)>Pearson の積率(M)","相関(C)>偏相関(P)","相関(C)>Spearman ランク順(S)",\
+  "回帰分析(R)>1 変量の線型回帰(U)"]
+  KOREAN=["평균(M)>일원배치 분산분석(A)","평균(M)>일표본 T 검정(O)","평균(M)>대응표본 T 검정(P)","평균(M)>독립표본 T 검정(I)",\
+  "비율(P)>대응표본 이항검정(R)","비율(P)>일표본 이항 검정(O)","비율(P)>독립표본 이항검정(I)","상관관계(C)>Pearson 적률(M)",\
+  "상관관계(C)>편상관(P)","상관관계(C)>Spearman 순위-순서(S)","회귀(R)>일변량 선형(U)"]
+  POLISH=["Średnie>Jednoczynnikowa ANOVA","Średnie>Test t dla jednej próby","Średnie>Test t dla prób zależnych",\
+  "Średnie>Test t dla prób niezależnych","Proporcje>Test dwumianowy dla prób zależnych",\
+  "Proporcje>Test dwumianowy dla jednej próby","Proporcje>Test dwumianowy dla prób niezależnych","Korelacje>Pearsona…",\
+  "Korelacje>Cząstkowe…","Korelacje>Spearmana…","Regresja>Liniowa jednej zmiennej…"]
+  RUSSIAN=["Средние>Однофакторный дисперсионный анализ","Средние>Одновыборочный T-критерий",\
+  "Средние>T-критерий для парных выборок","Средние>T-критерий для независимых выборок",\
+  "Доли>Биномиальный критерий для связанных выборок","Доли>Одновыборочный биномиальный критерий",\
+  "Доли>Биномиальный критерий для независимых выборок","Корреляции>Смешанный момент Пирсона","Корреляции>Частная",\
+  "Корреляции>Коэффициент ранговой корреляции Спирмена","Регрессия>Линейная одномерная"]
+  SPANISH=["Medias>ANOVA de un factor","Medias>Prueba T de una muestra","Medias>Prueba T de muestras emparejadas",\
+  "Medias>Prueba T de muestras independientes","Proporciones>Prueba binomial para muestras relacionadas",\
+  "Proporciones>Prueba binomial para una muestra","Proporciones>Prueba binomial para muestras independientes",\
+  "Correlaciones>Momento-producto de Pearson","Correlaciones>Parcial","Correlaciones>Orden de rangos de Spearman",\
+  "Regresión>Lineal univariado"]
+  SCHINESE=["均值(M)>单因素 ANOVA 检验","均值(M)>单样本 t 检验(O)","均值(M)>成对样本 t 检验(P)","均值(M)>独立样本 t 检验(I)",\
+  "比例(P)>相关样本二项检验(R)","比例(P)>单样本二项检验(O)","比例(P)>独立样本二项检验(I)","相关性(C)>皮尔逊积矩(M)","相关性(C)>偏相关性(P)",\
+  "相关性(C)>斯皮尔曼秩次(S)","回归(R)>单变量线性(U)"]
+  TCHINESE=["平均值(M)>單因數變異數分析(A)","平均值(M)>單樣本 T 檢定(O)","平均值(M)>成對樣本 T 檢定(P)","平均值(M)>獨立樣本 T 檢定(I)",\
+  "比例(P)>相關樣本二項式檢定(R)","比例(P)>單樣本二項式檢定(O)","比例(P)>獨立樣本二項式檢定(I)","相關性(C)>Pearson 積差(M)",\
+  "相關性(C)>偏相關(P)","相關性(C)>Spearman 等級","迴歸(R)>單變量線性(U)"]
+
+  if l == "BPORTUGU": 
+    Menu="Analisar>Análise de potência"
+    cmdname=BPORTUGU[power]
+  elif l == 'ENGLISH':
+    Menu="Analyze>Power Analysis"
+    cmdname=ENGLISH[power]
+  elif l == 'FRENCH':
+    Menu="Analyse>Analyse de puissance"
+    cmdname=FRENCH[power]
+  elif l == 'GERMAN':
+    Menu='Analysieren>Poweranalyse'
+    cmdname=GERMAN[power]
+  elif l == "ITALIAN":
+    Menu='Analizza>Analisi di potenza'
+    cmdname=ITALIAN[power]
+  elif l == "JAPANESE":
+    Menu='分析(A)>検定力分析(W)'
+    cmdname=JAPANESE[power]
+  elif l == "KOREAN":
+    Menu='분석(A)>거듭제곱 분석(W)'
+    cmdname=KOREAN[power]
+  elif l == "POLISH":
+    Menu='Analiza>Moc testów'
+    cmdname=POLISH[power]
+  elif l == "RUSSIAN":
+    Menu='Анализ>Анализ статистической мощности'
+    cmdname=RUSSIAN[power]
+  elif l == "SPANISH":
+    Menu='Analizar>Análisis de potencia'
+    cmdname=SPANISH[power]
+  elif l == "SCHINESE":
+    Menu='分析(A)>功效分析(W)'
+    cmdname=SCHINESE[power]
+  elif l == "TCHINESE":
+    Menu='分析(A)>檢定力分析(W)'
+    cmdname=TCHINESE[power]
 
   import spss
-  x = SpssDataUI.InvokeDialog(Menu+cmdname,False)
+  x = SpssDataUI.InvokeDialog(Menu+">"+cmdname,False)
   syntax=x.replace(' =','=').replace('= ','=')
   return syntax
 
@@ -628,7 +740,10 @@ def do_power(graph_type='',parameter_statement='',command='',vary='',values='',s
   import spssaux
 
   global printback
- 
+  
+  MyLanguage=spss.GetSetting("OLANG","").upper()
+  if MyLanguage == '': MyLanguage = "ENGLISH"
+  
   #Set up defaults for string values of VARY
   if values == '':
     if vary == "TEST":
@@ -711,7 +826,8 @@ def do_power(graph_type='',parameter_statement='',command='',vary='',values='',s
       print("gtype="+gtype)
 
     if parameter_statement == '':
-      syntax=GetSyntaxFromUI(command)
+      Lang=Get_UI_Lang(PLATFORM)
+      syntax=GetSyntaxFromUI(Lang,command)
     else:
       syntax = command + " " + parameter_statement.upper().replace('  /',' /')
 
