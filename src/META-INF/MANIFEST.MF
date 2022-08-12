@@ -1,16 +1,20 @@
 Name: STATS_POWERSIM
+Display-Name: Power Simulation
 Dialog-Specs: STATS_POWERSIM.cfe
 Command-Specs: STATS_POWERSIM.xml
 Code-Files: STATS_POWERSIM.py
 Misc-Files: STATS_POWERSIM.html,extsyntax.css,IBMdialogicon.png
 Summary: Performs simulations of various parameters for the POWER proc
  edures
+Description: This extensions allows the user to vary certain parameter
+ s, such as alpha, variance, etc., and note how sample size and power
+ requirements vary.
 Author: Richard J Marcantonio
-Version: 1.0.1
+Version: 1.0.2
 Product-Version: 28
-Date: 08/01/22
-Platforms: Mac, Windows
-Categories: Power Analysis
+Date: 08/11/22
+Platforms: macOS, Windows
+Categories: Power Analysis, Simulations
 Plugins: Python
 Python-Version: 3
 Translation-Catalogues: lang
