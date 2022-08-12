@@ -608,7 +608,7 @@ def Get_UI_Lang(my_os):
         UI_Lang=x[y+13:z].replace("'","").replace(' ',"")
    
   elif my_os == "windows":
-
+    import winreg
     path= winreg.HKEY_CURRENT_USER
     key = winreg.OpenKeyEx(path, r"Software\JavaSoft\Prefs\com\ibm\/S/P/S/S\/Statistics\one\ui\options\general")
     value = winreg.QueryValueEx(key,"ui_language")
