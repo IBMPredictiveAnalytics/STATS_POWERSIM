@@ -1,4 +1,4 @@
-﻿import spssaux, extension
+import spssaux, extension
 from extension import Template, Syntax, processcmd
 import spss
 import os
@@ -585,6 +585,34 @@ def WarningsTable(Text):
   table[(rowLabel,)] = spss.CellText.String(Text)
   spss.EndProcedure()
 
+def GetSPSSVersion():
+  spss.Submit("""
+oms select all /destination viewer=no /tag="__x1__".
+oms /select tables /destination format=OXML XMLWORKSPACE='test' /if subtypes='Version' /tag='__x2__'.
+sho ver.
+omsend tag=['__x1__','__x2__'].
+""")
+  handle='test'
+  context="/outputTree"
+  tree_location="//pivotTable[@subType='Version']/dimension[@text='Component']/category[@text='STATS.EXE']/dimension[@text='Information']"
+  xpath=tree_location+"/category[@text='Version']/cell/@text"
+  v=spss.EvaluateXPath('test',context,xpath)
+  spss.DeleteXPathHandle('test')
+  return(v)
+
+def get_pid(my_os, name):
+  import subprocess
+  pid=0
+  if my_os.lower() == "windows":
+    output=str(subprocess.run(["tasklist"], capture_output=True))
+    x=output.split('\\r\\n')
+    for line in x:
+      if line.find(name) > -1:
+        l=' '.join(line.split()).split(" ")
+        pid=l[1]
+        break
+  return(pid)
+
 def Get_UI_Lang(my_os):
   ## Get ui_language
   
@@ -609,8 +637,14 @@ def Get_UI_Lang(my_os):
    
   elif my_os == "windows":
     import winreg
-    path= winreg.HKEY_CURRENT_USER
-    key = winreg.OpenKeyEx(path, r"Software\JavaSoft\Prefs\com\ibm\/S/P/S/S\/Statistics\one\ui\options\general")
+    pid=get_pid(my_os,"stats.exe")
+    v=GetSPSSVersion()
+    GetVersionNumber=str(v)[2:6]
+    if GetVersionNumber != "28.0": GetVersionNumber = "one"
+    stats_pid=GetVersionNumber+ " " + str(pid).strip()
+    x="Software\\JavaSoft\\Prefs\\com\\ibm\\/S/P/S/S\\/Statistics\\" + stats_pid + "\\ui\\options\\general"
+    path=winreg.HKEY_CURRENT_USER
+    key = winreg.OpenKeyEx(path,x)
     value = winreg.QueryValueEx(key,"ui_language")
     if key: winreg.CloseKey(key)
     UI_Lang=str(value[0]).replace("/","")
