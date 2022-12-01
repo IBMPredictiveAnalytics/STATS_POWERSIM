@@ -6,12 +6,12 @@ Code-Files: STATS_POWERSIM.py
 Misc-Files: STATS_POWERSIM.html,extsyntax.css,IBMdialogicon.png
 Summary: Performs simulations of various parameters for the POWER proc
  edures.
-Description: Performs simulations of various parameters for the POWER 
+Description: Performs simulations of various parameters for the POWER
  procedures.
 Author: Richard J Marcantonio
-Version: 1.0.2
+Version: 1.0.3
 Product-Version: 28
-Date: 08/11/22
+Date: 11/29/22
 Platforms: macOS, Windows
 Categories: Power Analysis, Simulations
 Plugins: Python
