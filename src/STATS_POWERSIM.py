@@ -1,4 +1,4 @@
-import spssaux, extension
+﻿import spssaux, extension
 from extension import Template, Syntax, processcmd
 import spss
 import os
@@ -585,34 +585,6 @@ def WarningsTable(Text):
   table[(rowLabel,)] = spss.CellText.String(Text)
   spss.EndProcedure()
 
-def GetSPSSVersion():
-  spss.Submit("""
-oms select all /destination viewer=no /tag="__x1__".
-oms /select tables /destination format=OXML XMLWORKSPACE='test' /if subtypes='Version' /tag='__x2__'.
-sho ver.
-omsend tag=['__x1__','__x2__'].
-""")
-  handle='test'
-  context="/outputTree"
-  tree_location="//pivotTable[@subType='Version']/dimension[@text='Component']/category[@text='STATS.EXE']/dimension[@text='Information']"
-  xpath=tree_location+"/category[@text='Version']/cell/@text"
-  v=spss.EvaluateXPath('test',context,xpath)
-  spss.DeleteXPathHandle('test')
-  return(v)
-
-def get_pid(my_os, name):
-  import subprocess
-  pid=0
-  if my_os.lower() == "windows":
-    output=str(subprocess.run(["tasklist"], capture_output=True))
-    x=output.split('\\r\\n')
-    for line in x:
-      if line.find(name) > -1:
-        l=' '.join(line.split()).split(" ")
-        pid=l[1]
-        break
-  return(pid)
-
 def Get_UI_Lang(my_os):
   ## Get ui_language
   
@@ -636,19 +608,25 @@ def Get_UI_Lang(my_os):
         UI_Lang=x[y+13:z].replace("'","").replace(' ',"")
    
   elif my_os == "windows":
-    import winreg
-    pid=get_pid(my_os,"stats.exe")
-    v=GetSPSSVersion()
-    GetVersionNumber=str(v)[2:6]
-    if GetVersionNumber != "28.0": GetVersionNumber = "one"
-    stats_pid=GetVersionNumber+ " " + str(pid).strip()
-    x="Software\\JavaSoft\\Prefs\\com\\ibm\\/S/P/S/S\\/Statistics\\" + stats_pid + "\\ui\\options\\general"
-    path=winreg.HKEY_CURRENT_USER
-    key = winreg.OpenKeyEx(path,x)
-    value = winreg.QueryValueEx(key,"ui_language")
-    if key: winreg.CloseKey(key)
-    UI_Lang=str(value[0]).replace("/","")
-
+    import subprocess
+    import tempfile
+    import os
+    tempdir=tempfile.gettempdir()
+    fcmd=tempdir+os.path.sep+"fo.cmd"
+    freg=tempdir+os.path.sep+"fn.txt"
+    f=open(fcmd,'w',encoding='utf-8')
+    f.write("reg export HKCU\Software\JavaSoft\Prefs\com\ibm\/S/P/S/S\/Statistics " + freg + " /y")
+    f.close()
+    subprocess.run([fcmd])
+    text_file = open(freg,"r",encoding='utf-16')
+    data = text_file.readlines()
+    text_file.close()
+    for d in data:
+      if d.find("ui_language")>-1:
+        UI_Lang=d.replace("/","").replace("ui_language",'').replace('=','').replace('"','')
+    os.remove(freg)
+    os.remove(fcmd)
+    
   return(UI_Lang)
 
 def GetSyntaxFromUI(lang,command):
@@ -656,7 +634,7 @@ def GetSyntaxFromUI(lang,command):
   SpssClient.StartClient()
   ActiveDataDoc = SpssClient.GetActiveDataDoc()
   SpssDataUI = ActiveDataDoc.GetDataUI()
-
+  
   c=command.upper()
   l=lang.upper()
   
@@ -724,40 +702,43 @@ def GetSyntaxFromUI(lang,command):
   "比例(P)>相關樣本二項式檢定(R)","比例(P)>單樣本二項式檢定(O)","比例(P)>獨立樣本二項式檢定(I)","相關性(C)>Pearson 積差(M)",\
   "相關性(C)>偏相關(P)","相關性(C)>Spearman 等級","迴歸(R)>單變量線性(U)"]
 
-  if l == "BPORTUGU": 
+  Menu=''
+  cmdname=''
+  
+  if FindString(l,"BPORTUGU"):
     Menu="Analisar>Análise de potência"
     cmdname=BPORTUGU[power]
-  elif l == 'ENGLISH':
+  elif FindString(l,"ENGLISH"):
     Menu="Analyze>Power Analysis"
     cmdname=ENGLISH[power]
-  elif l == 'FRENCH':
+  elif FindString(l,'FRENCH'):
     Menu="Analyse>Analyse de puissance"
     cmdname=FRENCH[power]
-  elif l == 'GERMAN':
+  elif FindString(l,'GERMAN'):
     Menu='Analysieren>Poweranalyse'
     cmdname=GERMAN[power]
-  elif l == "ITALIAN":
+  elif FindString(l,"ITALIAN"):
     Menu='Analizza>Analisi di potenza'
     cmdname=ITALIAN[power]
-  elif l == "JAPANESE":
+  elif FindString(l,"JAPANESE"):
     Menu='分析(A)>検定力分析(W)'
     cmdname=JAPANESE[power]
-  elif l == "KOREAN":
+  elif FindString(l,"KOREAN"):
     Menu='분석(A)>거듭제곱 분석(W)'
     cmdname=KOREAN[power]
-  elif l == "POLISH":
+  elif FindString(l,"POLISH"):
     Menu='Analiza>Moc testów'
     cmdname=POLISH[power]
-  elif l == "RUSSIAN":
+  elif FindString(l,"RUSSIAN"):
     Menu='Анализ>Анализ статистической мощности'
     cmdname=RUSSIAN[power]
-  elif l == "SPANISH":
+  elif FindString(l,"SPANISH"):
     Menu='Analizar>Análisis de potencia'
     cmdname=SPANISH[power]
-  elif l == "SCHINESE":
+  elif FindString(l,"SCHINESE"):
     Menu='分析(A)>功效分析(W)'
     cmdname=SCHINESE[power]
-  elif l == "TCHINESE":
+  elif FindString(l,"TCHINESE"):
     Menu='分析(A)>檢定力分析(W)'
     cmdname=TCHINESE[power]
 
@@ -834,7 +815,7 @@ def do_power(graph_type='',parameter_statement='',command='',vary='',values='',s
   Sz=[]
   LinRegPartialCorr = False
   errorNum = '0'
-
+  
   if vary == '' or values == '' or command == '':
     WarningsText="COMMAND, VARY, and VALUES are all required. At least one is missing. This procedure cannot run."
     WarningsTable(WarningsText)
@@ -861,7 +842,7 @@ def do_power(graph_type='',parameter_statement='',command='',vary='',values='',s
 
     if parameter_statement == '':
       Lang=Get_UI_Lang(PLATFORM)
-      syntax=GetSyntaxFromUI(Lang,command)
+      syntax=GetSyntaxFromUI(Lang,command)          
     else:
       syntax = command + " " + parameter_statement.upper().replace('  /',' /')
 
@@ -891,6 +872,7 @@ def do_power(graph_type='',parameter_statement='',command='',vary='',values='',s
       WarningsTable("Power Analysis cannot be run; analysis abandoned or otherwise empty.")
       errorNum = '3'
     else:
+    
       if print_debug: print("Syntax to be run: " + x)
 
       LinRegPartialCorr = x.lower().find("partial_corr") > -1
